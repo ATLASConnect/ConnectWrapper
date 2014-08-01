@@ -1,0 +1,103 @@
+#!/bin/sh
+
+# Local site definitions for the ConnectWrapper
+
+####################################################################
+
+
+# Frontier Server URL
+if [[ -n "${_RCC_FrontierServerURL}" ]]; then
+  export connectFrontierServerURL="${_RCC_FrontierServerURL}"
+else
+  export connectFrontierServerURL="(serverurl=http://frontier.racf.bnl.gov:8000/frontieratbnl)(serverurl=http://frontier02.racf.bnl.gov:8000/frontieratbnl)(serverurl=http://frontier01.racf.bnl.gov:8000/frontieratbnl)"
+fi
+
+
+# Frontier Proxy URL
+if [[ -n "${_RCC_FrontierProxyURL}" ]]; then
+  export connectFrontierProxyURL="${_RCC_FrontierProxyURL}"
+else
+  export connectFrontierProxyURL="(proxyurl=http://uct2-grid1.mwt2.org:3128)"
+fi
+
+
+# Frontier Server
+export FRONTIER_SERVER="${connectFrontierServerURL}${connectFrontierProxyURL}"
+
+
+# Connect Cache Root Location
+if [[ -n "${_RCC_ConnectScratch}" ]]; then
+  export connectRoot="${_RCC_ConnectScratch}"
+else
+  export connectRoot="/tmp"
+fi
+
+
+# ACE Root Location
+if [[ -n "${_RCC_Scratch}" ]]; then
+  export aceRoot="${_RCC_Scratch}"
+else
+  export aceRoot="/tmp"
+fi
+
+
+# Parrot Proxy Servers
+if [[ -n "${_RCC_ParrotProxy}" ]]; then
+  export connectParrotProxy="${_RCC_ParrotProxy}"
+else
+  export connectParrotProxy="http://uct2-grid1.mwt2.org:3128"
+fi
+
+
+# CVMFS Type
+if [[ -n "${_RCC_CVMFS}" ]]; then
+  export cvmfsType=${_RCC_CVMFS}
+else
+  export cvmfsType=undefined
+fi
+
+
+# CVMFS Proxy Servers (DIRECT)
+if [[ -n "${_RCC_CVMFSProxy}" ]]; then
+  export cvmfsProxy="${_RCC_CVMFSProxy};DIRECT"
+else
+  export cvmfsProxy="${connectParrotProxy};DIRECT"
+fi
+
+
+# CVMFS Mount
+if [[ -n "${_RCC_CVMFSMount}" ]]; then
+  export cvmfsMount="${_RCC_CVMFSMount}"
+else
+  export cvmfsMount="/cvmfs"
+fi
+
+
+# CVMFS Scratch
+if [[ -n "${_RCC_CVMFSScratch}" ]]; then
+  export cvmfsScratch="${_RCC_CVMFSScratch}"
+else
+  export cvmfsScratch="/tmp"
+fi
+
+
+# CVMFS Quota
+if [[ -n "${_RCC_CVMFSQuota}" ]]; then
+  export cvmfsQuota="${_RCC_CVMFSQuota}"
+else
+  export cvmfsQuota="25000"
+fi
+
+
+####################################################################
+
+# For CVMFS Access Type "native", we will provide some defaults used by MWT2
+
+# Use a local $OSG_APP
+#export OSG_APP=/share/osg/mwt2/app/atlas_app
+
+# Use a local OSG WN Client
+#export OSG_GRID=/share/wn-client
+
+
+####################################################################
