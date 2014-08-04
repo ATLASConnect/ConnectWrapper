@@ -30,6 +30,9 @@ aceImagePython="${aceImage}/usr/lib64/python2.6/site-packages:${aceImage}/usr/li
 # ACE perl modules path
 aceImagePerl="${aceImage}/usr/share/perl5/vendor_perl:${aceImage}/usr/share/perl5"
 
+# ACE C include path
+aceImageCInclude="${aceImage}/usr/include"
+
 
 
 # ACE Time Stamp
@@ -149,17 +152,23 @@ fi
 
 if [[ -z "${connectUseSystemLIB}" ]]; then
 
-  # Add the ACE Image Libraries
-  f_addldlibrarypath "${aceImageLIB}"
-
   # Add the ACE Image binaries to the end of the path
   f_addpath "${aceImageBIN}"
 
+  # Add the ACE Image Libraries to the loader path
+  f_addldlibrarypath "${aceImageLIB}" ^
+
+  # Add the ACE Image Libraries to the linker path
+  f_addlibrarypath "${aceImageLIB}" ^
+
   # Add the ACE Image Python modules
-  f_addpythonpath "${aceImagePython}"
+  f_addpythonpath "${aceImagePython}" ^
 
   # Add the ACE Image Perl modules
-   f_addperl5lib "${aceImagePerl}"
+   f_addperl5lib "${aceImagePerl}" ^
+
+  # Add the ACE Image C Inlucde modules
+   f_addcincludepath "${aceImageCInclude}" ^
 
 fi
 

@@ -119,6 +119,29 @@ function f_addldlibrarypath () {
 }
 
 
+# Add a path to $LIBRARY_PATH if it is missing
+
+function f_addlibrarypath () {
+
+  echo ${LIBRARY_PATH} | /bin/egrep -q "(^|:)$1($|:)"
+
+  if [[ $? -ne 0 ]]; then
+    if [[ -z "${LIBRARY_PATH}" ]]; then
+      export LIBRARY_PATH=$1
+    else
+      if [[ $2 == "^" ]]; then
+        export LIBRARY_PATH=$1:${LIBRARY_PATH}
+      else
+        export LIBRARY_PATH=${LIBRARY_PATH}:$1
+      fi
+    fi
+  fi
+
+  return 0
+
+}
+
+
 # Add a path to $PYTHONPATH if it is missing
 
 function f_addpythonpath () {
@@ -156,6 +179,29 @@ function f_addperl5lib () {
         export PERL5LIB=$1:${PERL5LIB}
       else
         export PERL5LIB=${PERL5LIB}:$1
+      fi
+    fi
+  fi
+
+  return 0
+
+}
+
+
+# Add a path to $C_INCLUDE_PATH if it is missing
+
+function f_addcincludepath () {
+
+  echo ${C_INCLUDE_PATH} | /bin/egrep -q "(^|:)$1($|:)"
+
+  if [[ $? -ne 0 ]]; then
+    if [[ -z "${C_INCLUDE_PATH}" ]]; then
+      export C_INCLUDE_PATH=$1
+    else
+      if [[ $2 == "^" ]]; then
+        export C_INCLUDE_PATH=$1:${C_INCLUDE_PATH}
+      else
+        export C_INCLUDE_PATH=${C_INCLUDE_PATH}:$1
       fi
     fi
   fi
