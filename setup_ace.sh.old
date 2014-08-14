@@ -31,11 +31,8 @@ aceImagePython="${aceImage}/usr/lib64/python2.6/site-packages:${aceImage}/usr/li
 aceImagePerl="${aceImage}/usr/share/perl5/vendor_perl:${aceImage}/usr/share/perl5"
 
 # ACE C include path
-aceImageCInclude="${aceImage}/usr/include"
+aceImageCInclude="${aceImage}/usr/include:${aceImage}/usr/include/libxml2"
 
-for _C_INCLUDE in $(find ${aceImage}/usr/include -maxdepth 1 -type d | sort); do
-  aceImageCInclude="${aceImageCInclude}:${_C_INCLUDE}"
-done
 
 
 # ACE Time Stamp
