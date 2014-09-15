@@ -17,7 +17,7 @@ fi
 if [[ -n "${_RCC_FrontierProxyURL}" ]]; then
   export connectFrontierProxyURL="${_RCC_FrontierProxyURL}"
 else
-  export connectFrontierProxyURL="(proxyurl=http://uct2-grid1.mwt2.org:3128)"
+  export connectFrontierProxyURL="(proxyurl=http://uct2-squid.mwt2.org:3128)"
 fi
 
 
@@ -45,7 +45,7 @@ fi
 if [[ -n "${_RCC_ParrotProxy}" ]]; then
   export connectParrotProxy="${_RCC_ParrotProxy}"
 else
-  export connectParrotProxy="http://uct2-grid1.mwt2.org:3128"
+  export connectParrotProxy="http://uct2-squid.mwt2.org:3128"
 fi
 
 

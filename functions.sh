@@ -100,16 +100,16 @@ function f_addpath () {
 
 function f_addldlibrarypath () {
 
-  echo ${LD_LIBRARY_PATH} | /bin/egrep -q "(^|:)$1($|:)"
+  echo "${LD_LIBRARY_PATH}" | /bin/egrep -q "(^|:)$1($|:)"
 
   if [[ $? -ne 0 ]]; then
     if [[ -z "${LD_LIBRARY_PATH}" ]]; then
-      export LD_LIBRARY_PATH=$1
+      export LD_LIBRARY_PATH="$1"
     else
       if [[ $2 == "^" ]]; then
-        export LD_LIBRARY_PATH=$1:${LD_LIBRARY_PATH}
+        export LD_LIBRARY_PATH="$1:${LD_LIBRARY_PATH}"
       else
-        export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$1
+        export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$1"
       fi
     fi
   fi
@@ -123,16 +123,39 @@ function f_addldlibrarypath () {
 
 function f_addlibrarypath () {
 
-  echo ${LIBRARY_PATH} | /bin/egrep -q "(^|:)$1($|:)"
+  echo "${LIBRARY_PATH}" | /bin/egrep -q "(^|:)$1($|:)"
 
   if [[ $? -ne 0 ]]; then
     if [[ -z "${LIBRARY_PATH}" ]]; then
-      export LIBRARY_PATH=$1
+      export LIBRARY_PATH="$1"
     else
       if [[ $2 == "^" ]]; then
-        export LIBRARY_PATH=$1:${LIBRARY_PATH}
+        export LIBRARY_PATH="$1:${LIBRARY_PATH}"
       else
-        export LIBRARY_PATH=${LIBRARY_PATH}:$1
+        export LIBRARY_PATH="${LIBRARY_PATH}:$1"
+      fi
+    fi
+  fi
+
+  return 0
+
+}
+
+
+# Add a path to $DYLD_LIBRARY_PATH if it is missing
+
+function f_adddyldlibrarypath () {
+
+  echo "${DYLD_LIBRARY_PATH}" | /bin/egrep -q "(^|:)$1($|:)"
+
+  if [[ $? -ne 0 ]]; then
+    if [[ -z "${DYLD_LIBRARY_PATH}" ]]; then
+      export DYLD_LIBRARY_PATH="$1"
+    else
+      if [[ $2 == "^" ]]; then
+        export DYLD_LIBRARY_PATH="$1:${DYLD_LIBRARY_PATH}"
+      else
+        export DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}:$1"
       fi
     fi
   fi
@@ -146,16 +169,16 @@ function f_addlibrarypath () {
 
 function f_addpythonpath () {
 
-  echo ${PYTHONPATH} | /bin/egrep -q "(^|:)$1($|:)"
+  echo "${PYTHONPATH}" | /bin/egrep -q "(^|:)$1($|:)"
 
   if [[ $? -ne 0 ]]; then
     if [[ -z "${PYTHONPATH}" ]]; then
-      export PYTHONPATH=$1
+      export PYTHONPATH="$1"
     else
       if [[ $2 == "^" ]]; then
-        export PYTHONPATH=$1:${PYTHONPATH}
+        export PYTHONPATH="$1:${PYTHONPATH}"
       else
-        export PYTHONPATH=${PYTHONPATH}:$1
+        export PYTHONPATH="${PYTHONPATH}:$1"
       fi
     fi
   fi
@@ -169,16 +192,16 @@ function f_addpythonpath () {
 
 function f_addperl5lib () {
 
-  echo ${PERL5LIB} | /bin/egrep -q "(^|:)$1($|:)"
+  echo "${PERL5LIB}" | /bin/egrep -q "(^|:)$1($|:)"
 
   if [[ $? -ne 0 ]]; then
     if [[ -z "${PERL5LIB}" ]]; then
-      export PERL5LIB=$1
+      export PERL5LIB="$1"
     else
       if [[ $2 == "^" ]]; then
-        export PERL5LIB=$1:${PERL5LIB}
+        export PERL5LIB="$1:${PERL5LIB}"
       else
-        export PERL5LIB=${PERL5LIB}:$1
+        export PERL5LIB="${PERL5LIB}:$1"
       fi
     fi
   fi
@@ -188,20 +211,65 @@ function f_addperl5lib () {
 }
 
 
+# Add a path to $CPATH if it is missing
+
+function f_addcpath () {
+
+  echo "${CPATH}" | /bin/egrep -q "(^|:)$1($|:)"
+
+  if [[ $? -ne 0 ]]; then
+    if [[ -z "${CPATH}" ]]; then
+      export CPATH="$1"
+    else
+      if [[ $2 == "^" ]]; then
+        export CPATH="$1:${CPATH}"
+      else
+        export CPATH="${CPATH}:$1"
+      fi
+    fi
+  fi
+
+  return 0
+
+}
+
 # Add a path to $C_INCLUDE_PATH if it is missing
 
 function f_addcincludepath () {
 
-  echo ${C_INCLUDE_PATH} | /bin/egrep -q "(^|:)$1($|:)"
+  echo "${C_INCLUDE_PATH}" | /bin/egrep -q "(^|:)$1($|:)"
 
   if [[ $? -ne 0 ]]; then
     if [[ -z "${C_INCLUDE_PATH}" ]]; then
-      export C_INCLUDE_PATH=$1
+      export C_INCLUDE_PATH="$1"
     else
       if [[ $2 == "^" ]]; then
-        export C_INCLUDE_PATH=$1:${C_INCLUDE_PATH}
+        export C_INCLUDE_PATH="$1:${C_INCLUDE_PATH}"
       else
-        export C_INCLUDE_PATH=${C_INCLUDE_PATH}:$1
+        export C_INCLUDE_PATH="${C_INCLUDE_PATH}:$1"
+      fi
+    fi
+  fi
+
+  return 0
+
+}
+
+
+# Add a path to $CPLUS_INCLUDE_PATH if it is missing
+
+function f_addcplusincludepath () {
+
+  echo "${CPLUS_INCLUDE_PATH}" | /bin/egrep -q "(^|:)$1($|:)"
+
+  if [[ $? -ne 0 ]]; then
+    if [[ -z "${CPLUS_INCLUDE_PATH}" ]]; then
+      export CPLUS_INCLUDE_PATH="$1"
+    else
+      if [[ $2 == "^" ]]; then
+        export CPLUS_INCLUDE_PATH="$1:${CPLUS_INCLUDE_PATH}"
+      else
+        export CPLUS_INCLUDE_PATH="${CPLUS_INCLUDE_PATH}:$1"
       fi
     fi
   fi

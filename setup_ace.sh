@@ -30,11 +30,11 @@ aceImagePython="${aceImage}/usr/lib64/python2.6/site-packages:${aceImage}/usr/li
 # ACE perl modules path
 aceImagePerl="${aceImage}/usr/share/perl5/vendor_perl:${aceImage}/usr/share/perl5"
 
-# ACE C include path
-aceImageCInclude="${aceImage}/usr/include"
+# ACE Include path
+aceImageInclude="${aceImage}/usr/include"
 
-for _C_INCLUDE in $(find ${aceImage}/usr/include -maxdepth 1 -type d | sort); do
-  aceImageCInclude="${aceImageCInclude}:${_C_INCLUDE}"
+for _INCLUDE in $(find ${aceImage}/usr/include -maxdepth 1 -type d | sort); do
+  aceImageInclude="${aceImageInclude}:${_INCLUDE}"
 done
 
 
@@ -164,14 +164,23 @@ if [[ -z "${connectUseSystemLIB}" ]]; then
   # Add the ACE Image Libraries to the linker path
   f_addlibrarypath "${aceImageLIB}" ^
 
+  # Add the ACE Image Libraries to the dynamic loader path
+#  f_adddyldlibrarypath "${aceImageLIB}" ^
+
   # Add the ACE Image Python modules
   f_addpythonpath "${aceImagePython}" ^
 
   # Add the ACE Image Perl modules
-   f_addperl5lib "${aceImagePerl}" ^
+  f_addperl5lib "${aceImagePerl}" ^
 
-  # Add the ACE Image C Inlucde modules
-   f_addcincludepath "${aceImageCInclude}" ^
+  # Add the ACE Image CPATH
+#  f_addcpath "${aceImageInclude}" ^
+
+  # Add the ACE Image C Include modules
+  f_addcincludepath "${aceImageInclude}" ^
+
+  # Add the ACE Image CPLUS Include modules
+#  f_addcplusincludepath "${aceImageInclude}" ^
 
 fi
 
