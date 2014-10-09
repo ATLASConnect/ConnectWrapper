@@ -108,6 +108,7 @@ f_maketarball icc_mcore      ${cctoolsVer}
 f_maketarball icc_taub       ${cctoolsVer}
 f_maketarball midway         ${cctoolsVer}
 f_maketarball midway_mcore   ${cctoolsVer}
+f_maketarball mwt2           ${cctoolsVer}
 f_maketarball odyssey        ${cctoolsVer}
 f_maketarball odyssey_short  ${cctoolsVer}
 f_maketarball stampede       ${cctoolsVer}
