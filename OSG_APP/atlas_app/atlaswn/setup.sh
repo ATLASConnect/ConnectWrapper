@@ -1,4 +1,8 @@
-#!/bin/sh
+#!/bin/bash
+
+
+# DQ2 uses $USER to create a unique /var/tmp/.dq2$USER/TiersOfAtlas.py
+[[ -z $USER ]] && export USER=$(whoami)
 
 
 # Setup DQ2 and Rucio Client
