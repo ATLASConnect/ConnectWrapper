@@ -4,11 +4,11 @@
 
 
 # The version of the wrapper
-export connectWrapperVersion="3.0-9"
+export connectWrapperVersion="3.0-11"
 
 
 ######################################################################################
-# Native CVMFS, nfsCVMFS, PortableCVMFS, Parrot/CVMFS or Parrot/Chirp Wrapper
+# Native CVMFS, nfsCVMFS, ReplicaCVMFS, PortableCVMFS, Parrot/CVMFS or Parrot/Chirp Wrapper
 ######################################################################################
 # 
 #
@@ -18,10 +18,11 @@ export connectWrapperVersion="3.0-9"
 #
 # At the minimum, $cvmfsType should be defined to one of the following values
 #
-# 	native		Use System installed CVMFS,    HEPOS_libs and Certificate Authority
-#	parrot		Use Parrot to access CVMFS,    ACE Cache available
-#	nfs		Use System installed nfsCVMFS, ACE Cache available
-#	portable	Use PortableCVMFS,             ACE Cache available
+# 	native		Use System installed CVMFS             HEPOS_libs and Certificate Authority
+#	parrot		Use Parrot to access CVMFS             ACE Cache available
+#	nfs		Use System installed nfsCVMFS          ACE Cache available
+#	replica		Use System installed ReplicaCVMFS      ACE Cache available
+#	portable	Use PortableCVMFS                      ACE Cache available
 #
 # Default value for $cvmfsType is "native"
 #
@@ -175,6 +176,7 @@ case ${cvmfsType} in
     export connectUseNativeONLY=''
     export connectUseParrotCVMFS=True
     export connectUseNfsCVMFS=''
+    export connectUseReplicaCVMFS=''
     export connectUsePortableCVMFS=''
 
   ;;
@@ -187,6 +189,20 @@ case ${cvmfsType} in
     export connectUseNativeONLY=''
     export connectUseParrotCVMFS=''
     export connectUseNfsCVMFS=True
+    export connectUseReplicaCVMFS=''
+    export connectUsePortableCVMFS=''
+
+  ;;
+
+
+  # Use ReplicaCVMFS to access /cvmfs
+
+  (replica)
+
+    export connectUseNativeONLY=''
+    export connectUseParrotCVMFS=''
+    export connectUseNfsCVMFS=''
+    export connectUseReplicaCVMFS=True
     export connectUsePortableCVMFS=''
 
   ;;
@@ -199,6 +215,7 @@ case ${cvmfsType} in
     export connectUseNativeONLY=''
     export connectUseParrotCVMFS=''
     export connectUseNfsCVMFS=''
+    export connectUseReplicaCVMFS=''
     export connectUsePortableCVMFS=True
 
   ;;
@@ -212,6 +229,7 @@ case ${cvmfsType} in
     export connectUseParrotCVMFS=''
     export connectUsePortableCVMFS=''
     export connectUseNfsCVMFS=''
+    export connectUseReplicaCVMFS=''
     export connectUseSystemLIB=True
 
   ;;
@@ -435,6 +453,9 @@ if [[ -n "${connectUseNativeONLY}" ]]; then
   f_echo "CVMFS Repository Access   = Native CVMFS"
 elif [[ -n "${connectUseNfsCVMFS}" ]]; then
   f_echo "CVMFS Repository Access   = nfsCVMFS"
+  f_echo "CVMFS Mount               = ${cvmfsMount}"
+elif [[ -n "${connectUseReplicaCVMFS}" ]]; then
+  f_echo "CVMFS Repository Access   = ReplicaCVMFS"
   f_echo "CVMFS Mount               = ${cvmfsMount}"
 elif [[ -n "${connectUsePortableCVMFS}" ]]; then
   f_echo "CVMFS Repository Access   = PortableCVMFS"
@@ -813,6 +834,8 @@ if [[ -z "${connectUseParrotCVMFS}" ]]; then
     f_echo "Begin execution using Native CVMFS to access the repositories"
   elif [[ -n "${connectUseNfsCVMFS}" ]]; then
     f_echo "Begin execution using nfsCVMFS to access the repositories"
+  elif [[ -n "${connectUseReplicaCVMFS}" ]]; then
+    f_echo "Begin execution using ReplicaCVMFS to access the repositories"
   elif [[ -n "${connectUsePortableCVMFS}" ]]; then
     f_echo "Begin execution using PortableCVMFS to access the repositories"
   fi

@@ -6,6 +6,8 @@ ConnectWrapper provides an Atlas Complaint Environment on a Remote Cluster
 
 History
 =======
+20141111  3.0-11 Add ReplicaCVMFS (works same as nfsCVMFS)
+20141030  3.0-10 Add /usr/include/libxml2/libxml to C$INCLUDE in setup_ace.sh
 20141021  3.0-9  Set $USER on OSG_APP/atlas_app/atlaswn/setup.sh
 20141020  3.0-8  Change default frontier server url to remove RAL
 20141009  3.0-7	 Change default frontier server url to remove BNL

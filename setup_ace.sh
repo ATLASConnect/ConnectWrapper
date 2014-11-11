@@ -31,7 +31,7 @@ aceImagePython="${aceImage}/usr/lib64/python2.6/site-packages:${aceImage}/usr/li
 aceImagePerl="${aceImage}/usr/share/perl5/vendor_perl:${aceImage}/usr/share/perl5"
 
 # ACE Include path
-aceImageInclude="${aceImage}/usr/include"
+aceImageInclude="${aceImage}/usr/include:${aceImage}/usr/include/libxml2/libxml"
 
 for _INCLUDE in $(find ${aceImage}/usr/include -maxdepth 1 -type d | sort); do
   aceImageInclude="${aceImageInclude}:${_INCLUDE}"
