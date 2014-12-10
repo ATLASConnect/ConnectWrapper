@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Local site definitions for the ConnectWrapper
 
@@ -9,7 +9,7 @@
 if [[ -n "${_RCC_FrontierServerURL}" ]]; then
   export connectFrontierServerURL="${_RCC_FrontierServerURL}"
 else
-  export connectFrontierServerURL='(serverurl=http://frontier-atlas.lcg.triumf.ca:3128/ATLAS_frontier)(serverurl=http://frontier-atlas1.lcg.triumf.ca:3128/ATLAS_frontier)(serverurl=http://tier1nfs.triumf.ca:3128/ATLAS_frontier)(serverurl=http://frontier.triumf.ca:3128/ATLAS_frontier)(serverurl=http://ccfrontier.in2p3.fr:23128/ccin2p3-AtlasFrontier)(serverurl=http://ccsqfatlasli02.in2p3.fr:23128/ccin2p3-AtlasFrontier)(serverurl=http://ccsqfatlasli01.in2p3.fr:23128/ccin2p3-AtlasFrontier)'
+  export connectFrontierServerURL="${_DF_connectFrontierServerURL}"
 fi
 
 
@@ -17,7 +17,7 @@ fi
 if [[ -n "${_RCC_FrontierProxyURL}" ]]; then
   export connectFrontierProxyURL="${_RCC_FrontierProxyURL}"
 else
-  export connectFrontierProxyURL="(proxyurl=http://utatlas.its.utexas.edu:3128)"
+  export connectFrontierProxyURL="${_DF_connectFrontierProxyURL}"
 fi
 
 
@@ -29,7 +29,7 @@ export FRONTIER_SERVER="${connectFrontierServerURL}${connectFrontierProxyURL}"
 if [[ -n "${_RCC_ConnectScratch}" ]]; then
   export connectRoot="${_RCC_ConnectScratch}"
 else
-  export connectRoot="/tmp"
+  export connectRoot="${_DF_connectRoot}"
 fi
 
 
@@ -37,7 +37,7 @@ fi
 if [[ -n "${_RCC_Scratch}" ]]; then
   export aceRoot="${_RCC_Scratch}"
 else
-  export aceRoot="/tmp"
+  export aceRoot="${_DF_aceRoot}"
 fi
 
 
@@ -45,15 +45,15 @@ fi
 if [[ -n "${_RCC_ParrotProxy}" ]]; then
   export connectParrotProxy="${_RCC_ParrotProxy}"
 else
-  export connectParrotProxy="http://utatlas.its.utexas.edu:3128"
+  export connectParrotProxy="${_DF_connectParrotProxy}"
 fi
 
 
 # CVMFS Type
 if [[ -n "${_RCC_CVMFS}" ]]; then
-  export cvmfsType=${_RCC_CVMFS}
+  export cvmfsType="${_RCC_CVMFS}"
 else
-  export cvmfsType=undefined
+  export cvmfsType="${_DF_cvmfsType}"
 fi
 
 
@@ -69,7 +69,7 @@ fi
 if [[ -n "${_RCC_CVMFSMount}" ]]; then
   export cvmfsMount="${_RCC_CVMFSMount}"
 else
-  export cvmfsMount="/cvmfs"
+  export cvmfsMount="${_DF_cvmfsMount}"
 fi
 
 
@@ -77,7 +77,7 @@ fi
 if [[ -n "${_RCC_CVMFSScratch}" ]]; then
   export cvmfsScratch="${_RCC_CVMFSScratch}"
 else
-  export cvmfsScratch="/tmp"
+  export cvmfsScratch="${_DF_cvmfsScratch}"
 fi
 
 
@@ -85,7 +85,27 @@ fi
 if [[ -n "${_RCC_CVMFSQuota}" ]]; then
   export cvmfsQuota="${_RCC_CVMFSQuota}"
 else
-  export cvmfsQuota="25000"
+  export cvmfsQuota="${_DF_cvmfsQuota}"
+fi
+
+
+####################################################################
+
+
+# For CVMFS Access Type "native", we will provide some defaults used by MWT2
+
+# Use a local $OSG_APP
+if [[ -n "${_RCC_OSG_APP}" ]]; then
+  export OSG_APP="${_RCC_OSG_APP}"
+else
+  export OSG_APP="${_DF_OSG_APP}"
+fi
+
+# Use a local OSG WN Client
+if [[ -n "${_RCC_OSG_GRID}" ]]; then
+  export OSG_GRID="${_RCC_OSG_GRID}"
+else
+  export OSG_GRID="${_DF_OSG_GRID}"
 fi
 
 

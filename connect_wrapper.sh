@@ -1,135 +1,7 @@
 #!/bin/bash
 
 ######################################################################################
-
-
-# The version of the wrapper
-export connectWrapperVersion="3.0-11"
-
-
-######################################################################################
-# Native CVMFS, nfsCVMFS, ReplicaCVMFS, PortableCVMFS, Parrot/CVMFS or Parrot/Chirp Wrapper
-######################################################################################
-# 
-#
-# The following variables will modify the action taken by the Connect Wrapper
-# 
-# These should be set in the site.conf script based on the requirements of the site
-#
-# At the minimum, $cvmfsType should be defined to one of the following values
-#
-# 	native		Use System installed CVMFS             HEPOS_libs and Certificate Authority
-#	parrot		Use Parrot to access CVMFS             ACE Cache available
-#	nfs		Use System installed nfsCVMFS          ACE Cache available
-#	replica		Use System installed ReplicaCVMFS      ACE Cache available
-#	portable	Use PortableCVMFS                      ACE Cache available
-#
-# Default value for $cvmfsType is "native"
-#
-#
-# The ACE Cache contains and ACE Image (for HEPOS_lib), OSG WN Client and a Certicate Authority
-# The ACE Cache componitents can be local (default tarball installation) or a CVMFS repository
-# The ACE Image can be bypassed and the System libraries used
-#
-# If Parrot/CVMFS is used, Parrot can "mount" access into the ACE Image
-#
-#
-######################################################################################
-#
-# If connectUseNativeONLY is defined, use Native access for all components
-#
-# These include
-#
-#	CVMFS Client	"Native" installation of "/cvmfs" and all CERN repositories (MWT2 might not be available)
-#	HEP_OSlibs	Installed on the system along with all other needed compatibility libraries
-#	$OSG_APP	Defined by the system or within site.conf
-#	$OSG_GRID	Defined by the system or within site.conf
-#	$OSG_WN_TMP	Setup by this wrapper within the job sandbox
-#	$X509_CERT_DIR	Defined by the system or within site.conf or a CA at /etc/grid-security/certificates
-#
-#export connectUseNativeONLY=True
-
-
-# If connectUsePortableCVMFS is defined, use PortableCVMFS to access all /cvmfs repositories
-# By default, it is assume that /cvmfs is mounted locally
-# The wrapper will setup access to an ACE Image (via env var), OSG WN Client and Certficate Authority
-#export connectUsePortableCVMFS=True
-
-
-# If connectUseParrotCVMFS is defined, use Parrot to access all /cvmfs repositories
-# By default, it is assume that /cvmfs is mounted locally
-# The wrapper will setup access to an ACE Image (via Parrot mounts), OSG WN Client and Certficate Authority
-#export connectUseParrotCVMFS=True
-
-
-# If connectUseParrotChirp is defined, we will use a Chirp Server to access /cvmfs
-# By default, Parrot/CVMFS will be used to access all CVMFS repositories
-# This setting only has meaning if connectUseParrotCVMFS is also defined
-#export connectUseParrotChirp=True
-
-
-# If connectUseParrotMount is defined (and using Parrot for CVMFS access), use Parrot --mount to access ACE Image
-# By default, ACE Image access will be via environment variables (same as other CVMFS access types)
-#export connectUseParrotMount=True
-
-
-# If connectUseCVMFSaceImageTB is defined, we will use an ACE Image from a Tarball installed in the ACE Cache
-# By default, an ACE Image from a CVMFS repository will be used
-#export connectUseCVMFSaceImageTB=True
-
-
-# If connectUseCVMFSaceWNCtb is defined, we will use the OSG WN Client from a Tarball installed in the ACE Cache
-# By default, the OSG WNC Client from a CVMFS repository will be used
-#export connectUseCVMFSaceWNCtb=True
-
-
-# If connectUseCVMFSaceCAtb is defined, we will use a Certificate Authority from an installation in the ACE Cache
-# By default, a Certificate Authority from a CVMFS repoisitory will be used
-#export connectUseCVMFSaceCAtb=True
-
-
-# If connectUseSystemLIB is defined, we will use an local System libraries for HEPOS_libs, etc
-# By default, LD_LIBRARY_PATH, etc will be modified to use the ACE Image libraries
-#export connectUseSystemLIB=True
-
-
-# If connectUseParrotThreadCloneFix is defined, we will use the Parrot Thread Clone Bugfix
-# By default, the Bugfix will not be used
-# Use of this feature will most likley have sever impact on performance
-# Only 4.1.4rc5 currently supports this feature
-#export connectUseParrotThreadCloneFix=True
-
-
-# The Chirp Server upon which the CVMFS repositories are statically mounted and accessible
-#export connectParrotChirpServer="uct2-c320.mwt2.org"
-#export connectParrotChirpServer="uct2-int.mwt2.org"
-
-
-# The blocksize to use for Parrot/Chirp, 1M or 2M
-#export connectParrotChirpBlocksize=1048576
-#export connectParrotChirpBlocksize=2097152
-
-
-# If connectUsePrivateParrotCache is defined, we setup a Per Job Private Cache
-# By default, the Parrot Cache is shared by all jobs on the same node
-#export connectUsePrivateParrotCache=True
-
-
-# Location of the ACE Image if connectUseCVMFSaceImageTB is not defined
-#export connectCVMFSaceImage=/cvmfs/osg.mwt2.org/atlas/sw/ACE/current
-#export connectCVMFSaceImage=/cvmfs/cernvm-prod.cern.ch/cvm3
-
-
-# Location of the OSG WN Client if connectUseCVMFSaceWNCtb is not defined
-#export connectCVMFSaceWNC=/cvmfs/osg.mwt2.org/osg/sw
-
-
-# Location of the Certificate Authority repository if connectUseCVMFSaceCAtb is not defined
-#export connectCVMFSaceCA=/cvmfs/osg.mwt2.org/osg/CA
-
-
-######################################################################################
-# Basic Connect defintions we need to start
+# Basic Connect definitions we need to start
 ######################################################################################
 
 # Signal list for traps
@@ -146,7 +18,15 @@ export connectHome="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Function definitions
 ######################################################################################
 
-source ${connectHome}/functions.sh
+source ${connectHome}/setup_functions.sh
+
+
+######################################################################################
+# Connect Wrapper defaults
+######################################################################################
+
+# This configuration file must be loaded first as it sets up defaults
+source ${connectHome}/setup_defaults.sh
 
 
 #########################################################################################
@@ -154,7 +34,7 @@ source ${connectHome}/functions.sh
 #########################################################################################
 
 # Setup the local site definitions
-source ${connectHome}/site.conf
+source ${connectHome}/setup_site.sh
 
 
 #########################################################################################
@@ -162,22 +42,23 @@ source ${connectHome}/site.conf
 #########################################################################################
 
 # If we have not defined a CVMFS access type, use undefined
-[[ -z "${cvmfsType}" ]] && export cvmfsType="undefined"
+[[ -z "${cvmfsType}" ]] && export cvmfsType="${_DF_cvmfsType}"
 
 
 # Set value values based on the CVMFS Access Type
 
 case ${cvmfsType} in
 
-  # Use Parrot to access /cvmfs
+  # Use NativeCVMFS to access /cvmfs
 
-  (parrot)
+  (native)
 
-    export connectUseNativeONLY=''
-    export connectUseParrotCVMFS=True
+    export connectUseNativeONLY=True
+    export connectUsePortableCVMFS=''
     export connectUseNfsCVMFS=''
     export connectUseReplicaCVMFS=''
-    export connectUsePortableCVMFS=''
+    export connectUseParrotCVMFS=''
+    export connectUseSystemLIB=True
 
   ;;
 
@@ -187,9 +68,9 @@ case ${cvmfsType} in
   (nfs)
 
     export connectUseNativeONLY=''
-    export connectUseParrotCVMFS=''
     export connectUseNfsCVMFS=True
     export connectUseReplicaCVMFS=''
+    export connectUseParrotCVMFS=''
     export connectUsePortableCVMFS=''
 
   ;;
@@ -200,10 +81,10 @@ case ${cvmfsType} in
   (replica)
 
     export connectUseNativeONLY=''
-    export connectUseParrotCVMFS=''
     export connectUseNfsCVMFS=''
     export connectUseReplicaCVMFS=True
     export connectUsePortableCVMFS=''
+    export connectUseParrotCVMFS=''
 
   ;;
 
@@ -213,10 +94,23 @@ case ${cvmfsType} in
   (portable)
 
     export connectUseNativeONLY=''
-    export connectUseParrotCVMFS=''
     export connectUseNfsCVMFS=''
     export connectUseReplicaCVMFS=''
     export connectUsePortableCVMFS=True
+    export connectUseParrotCVMFS=''
+
+  ;;
+
+
+  # Use Parrot to access /cvmfs
+
+  (parrot)
+
+    export connectUseNativeONLY=''
+    export connectUseNfsCVMFS=''
+    export connectUseReplicaCVMFS=''
+    export connectUsePortableCVMFS=''
+    export connectUseParrotCVMFS=True
 
   ;;
 
@@ -243,24 +137,21 @@ esac
 
 
 # The Chirp Server upon which the CVMFS repositories are statically mounted and accessible
-[[ -z "${connectParrotChirpServer}" ]] && export connectParrotChirpServer="uct2-int.mwt2.org"
-#[[ -z "${connectParrotChirpServer}" ]] && export connectParrotChirpServer="uct2-c320.mwt2.org"
+[[ -z "${connectParrotChirpServer}" ]] && export connectParrotChirpServer="${_DF_connectParrotChirpServer}"
 
 # The blocksize to use for Parrot/Chirp, 1M or 2M
-[[ -z "${connectParrotChirpBlocksize}" ]] && export connectParrotChirpBlocksize=2097152
-#[[ -z "${connectParrotChirpBlocksize}" ]] && export connectParrotChirpBlocksize=1048576
+[[ -z "${connectParrotChirpBlocksize}" ]] && export connectParrotChirpBlocksize="${_DF_connectParrotChirpBlocksize}"
 
 
 
 # Location of the ACE Image if connectUseCVMFSaceImageTB is not defined
-[[ -z "${connectCVMFSaceImage}" ]] && export connectCVMFSaceImage=/cvmfs/osg.mwt2.org/atlas/sw/ACE/current
-#[[ -z "${connectCVMFSaceImage}" ]] && export connectCVMFSaceImage=/cvmfs/cernvm-prod.cern.ch/cvm3
+[[ -z "${connectCVMFSaceImage}" ]] && export connectCVMFSaceImage="${_DF_connectCVMFSaceImage}"
 
 # Location of the OSG WN Client if connectUseCVMFSaceWNCtb is not defined
-[[ -z "${connectCVMFSaceWNC}" ]] && export connectCVMFSaceWNC=/cvmfs/osg.mwt2.org/osg/sw
+[[ -z "${connectCVMFSaceWNC}" ]] && export connectCVMFSaceWNC="${_DF_connectCVMFSaceWNC}"
 
 # Location of the Certificate Authority if connectUseCVMFSaceCAtb is not defined
-[[ -z "${connectCVMFSaceCA}" ]] && export connectCVMFSaceCA=/cvmfs/osg.mwt2.org/osg/CA
+[[ -z "${connectCVMFSaceCA}" ]] && export connectCVMFSaceCA="${_DF_connectCVMFSaceCA}"
 
 
 #########################################################################################
@@ -353,7 +244,7 @@ fi
 #########################################################################################
 
 # Location of Connect Root with a default to /tmp
-[[ -z ${connectRoot} ]] && export connectRoot=/tmp
+[[ -z ${connectRoot} ]] && export connectRoot="${_DF_connectRoot}"
 
 # Full path to the Connect cache for all users on this node
 export connectCacheRoot=${connectRoot}/connectCache
@@ -381,8 +272,8 @@ mkdir -p ${connectParrotCache}; chmod 700 ${connectParrotCache}
 # ACE Cache definitions
 #########################################################################################
 
-# Location of the ACE Root with a default to where the Connect Cache is located
-[[ -z ${aceRoot} ]] && export aceRoot=${connectRoot}
+# Location of the ACE Root
+[[ -z ${aceRoot} ]] && export aceRoot=${_DF_aceRoot}
 
 # Full path to the ACE cache for all users on this node
 export aceCacheRoot=${aceRoot}/aceCache
@@ -450,7 +341,7 @@ f_echo "Connect Cache             = ${connectCacheDailyRoot}"
 f_echo "CVMFS Access Type         = ${cvmfsType}"
 
 if [[ -n "${connectUseNativeONLY}" ]]; then
-  f_echo "CVMFS Repository Access   = Native CVMFS"
+  f_echo "CVMFS Repository Access   = NativeCVMFS"
 elif [[ -n "${connectUseNfsCVMFS}" ]]; then
   f_echo "CVMFS Repository Access   = nfsCVMFS"
   f_echo "CVMFS Mount               = ${cvmfsMount}"
@@ -778,6 +669,24 @@ fi
 
 
 #########################################################################################
+# The programing environment
+#########################################################################################
+
+f_echo
+f_echo "\$PATH                     = ${PATH}"
+f_echo "\$LD_LIBRARY_PATH          = ${LD_LIBRARY_PATH}"
+f_echo "\$LIBRARY_PATH             = ${LIBRARY_PATH}"
+f_echo "\$PYTHONPATH               = ${PYTHONPATH}"
+f_echo "\$PERL5LIB                 = ${PERL5LIB}"
+f_echo "\$CPATH                    = ${CPATH}"
+f_echo "\$C_INCLUDE_PATH           = ${C_INCLUDE_PATH}"
+f_echo "\$CPLUS_INCLUDE_PATH       = ${CPLUS_INCLUDE_PATH}"
+f_echo "\$CFLAGS                   = ${CFLAGS}"
+f_echo "\$CXXFLAGS                 = ${CXXFLAGS}"
+f_echo
+
+
+#########################################################################################
 # Make a unique Parrot cache for every job
 #########################################################################################
 
@@ -831,7 +740,7 @@ f_echo
 if [[ -z "${connectUseParrotCVMFS}" ]]; then
 
   if [[ -n "${connectUseNativeONLY}" ]]; then
-    f_echo "Begin execution using Native CVMFS to access the repositories"
+    f_echo "Begin execution using NativeCVMFS to access the repositories"
   elif [[ -n "${connectUseNfsCVMFS}" ]]; then
     f_echo "Begin execution using nfsCVMFS to access the repositories"
   elif [[ -n "${connectUseReplicaCVMFS}" ]]; then

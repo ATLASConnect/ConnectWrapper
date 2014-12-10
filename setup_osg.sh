@@ -14,11 +14,11 @@
 #########################################################################################
 
 # The server with all our tarballs
-aceHTTP=http://rccf.usatlas.org
+aceHTTP="${_DF_aceHTTP}"
 
 
 # ACE OSG Worker Node Client (WNC) tarball
-aceWNCtb=osg-wn-client.tar.gz
+aceWNCtb="${_DF_aceWNCtb}"
 
 
 # WNC Time Stamp

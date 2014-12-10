@@ -12,17 +12,17 @@
 #########################################################################################
 
 # The server with all our tarballs
-aceHTTP=http://rccf.usatlas.org
+aceHTTP="${_DF_aceHTTP}"
 
 # ACE Image tarball
-aceImageTB=ace.tar.gz
+aceImageTB="${_DF_aceImageTB}"
 
-
-# ACE library path
-aceImageLIB="${aceImage}/usr/lib64:${aceImage}/lib64:${aceImage}/usr/lib:${aceImage}/lib"
 
 # ACE binary path
 aceImageBIN="${aceImage}/usr/bin:${aceImage}/bin:${aceImage}/usr/sbin:${aceImage}/sbin"
+
+# ACE library path
+aceImageLIB="${aceImage}/usr/lib64:${aceImage}/lib64:${aceImage}/usr/lib:${aceImage}/lib"
 
 # ACE python libraries path
 aceImagePython="${aceImage}/usr/lib64/python2.6/site-packages:${aceImage}/usr/lib/python2.6/site-packages"
@@ -30,12 +30,19 @@ aceImagePython="${aceImage}/usr/lib64/python2.6/site-packages:${aceImage}/usr/li
 # ACE perl modules path
 aceImagePerl="${aceImage}/usr/share/perl5/vendor_perl:${aceImage}/usr/share/perl5"
 
-# ACE Include path
-aceImageInclude="${aceImage}/usr/include:${aceImage}/usr/include/libxml2/libxml"
+# ACE C Include path
+aceImageCInclude="${aceImage}/usr/include:${aceImage}/usr/local/include"
 
-for _INCLUDE in $(find ${aceImage}/usr/include -maxdepth 1 -type d | sort); do
-  aceImageInclude="${aceImageInclude}:${_INCLUDE}"
-done
+# ACE CPlus Include path
+aceImageCPlusInclude="${aceImageCInclude}"
+
+# ACE CFLAGS
+aceImageCFlags="--sysroot=${aceImage}"
+
+# ACE CPLUS FLAGS
+aceImageCPlusFlags="${aceImageCFlags}"
+
+
 
 
 # ACE Time Stamp
@@ -156,7 +163,7 @@ fi
 if [[ -z "${connectUseSystemLIB}" ]]; then
 
   # Add the ACE Image binaries to the end of the path
-  f_addpath "${aceImageBIN}"
+  f_addpath "${aceImageBIN}" ^
 
   # Add the ACE Image Libraries to the loader path
   f_addldlibrarypath "${aceImageLIB}" ^
@@ -165,7 +172,7 @@ if [[ -z "${connectUseSystemLIB}" ]]; then
   f_addlibrarypath "${aceImageLIB}" ^
 
   # Add the ACE Image Libraries to the dynamic loader path
-#  f_adddyldlibrarypath "${aceImageLIB}" ^
+# f_adddyldlibrarypath "${aceImageLIB}" ^
 
   # Add the ACE Image Python modules
   f_addpythonpath "${aceImagePython}" ^
@@ -174,13 +181,19 @@ if [[ -z "${connectUseSystemLIB}" ]]; then
   f_addperl5lib "${aceImagePerl}" ^
 
   # Add the ACE Image CPATH
-#  f_addcpath "${aceImageInclude}" ^
+  f_addcpath "${aceImageCInclude}" ^
 
   # Add the ACE Image C Include modules
-  f_addcincludepath "${aceImageInclude}" ^
+  f_addcincludepath "${aceImageCInclude}" ^
 
   # Add the ACE Image CPLUS Include modules
-#  f_addcplusincludepath "${aceImageInclude}" ^
+  f_addcplusincludepath "${aceImageCPlusInclude}" ^
+
+  # Add in our CFLAGS to redirect to the ACE Image
+  f_addcflags "${aceImageCFlags}" ^
+
+  # Add in our CXXFLAGS to redirect to the ACE Image
+  f_addcplusflags "${aceImageCPlusFlags}" ^
 
 fi
 

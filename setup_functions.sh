@@ -279,6 +279,52 @@ function f_addcplusincludepath () {
 }
 
 
+# Add a path to $CFLAGS if it is missing
+
+function f_addcflags () {
+
+  echo "${CFLAGS}" | /bin/egrep -q "(^|:)$1($|:)"
+
+  if [[ $? -ne 0 ]]; then
+    if [[ -z "${CFLAGS}" ]]; then
+      export CFLAGS="$1"
+    else
+      if [[ $2 == "^" ]]; then
+        export CFLAGS="$1 ${CFLAGS}"
+      else
+        export CFLAGS="${CFLAGS} $1"
+      fi
+    fi
+  fi
+
+  return 0
+
+}
+
+
+# Add a path to $CXXFLAGS if it is missing
+
+function f_addcplusflags () {
+
+  echo "${CXXFLAGS}" | /bin/egrep -q "(^|:)$1($|:)"
+
+  if [[ $? -ne 0 ]]; then
+    if [[ -z "${CXXFLAGS}" ]]; then
+      export CXXFLAGS="$1"
+    else
+      if [[ $2 == "^" ]]; then
+        export CXXFLAGS="$1 ${CXXFLAGS}"
+      else
+        export CXXFLAGS="${CXXFLAGS} $1"
+      fi
+    fi
+  fi
+
+  return 0
+
+}
+
+
 # Create a lock on a given location
 
 function f_create_lock () {
