@@ -6,6 +6,7 @@ ConnectWrapper provides an Atlas Complaint Environment on a Remote Cluster
 
 History
 =======
+20141210  4.2-1  Fix function search in f_echo to setup_functions
 20141210  4.2-0  Change all conf files to setup_xxxx.sh (setup_defaults, setup_site, setup_functions)
 20141209  4.1-0  Merge all site.conf into one
 20141209  4.0-4  Some cleanup of site.conf.XXX in preparation for merger

@@ -9,12 +9,12 @@
 function f_echo () {
 
   _level=0
-  _name="functions"
+  _name="setup_functions"
 
 
   # Find the first script not called "functions"
 
-  while [[ "${_name}" == "functions" ]]; do
+  while [[ "${_name}" == "setup_functions" ]]; do
     _name=$(basename ${BASH_SOURCE[${_level}]} .sh)
     _level=$((_level+1))
     [[ ${_level} -gt 10 ]] && _name="*error*"

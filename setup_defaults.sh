@@ -4,7 +4,7 @@
 
 
 # The version of the wrapper
-export connectWrapperVersion="4.2-0"
+export connectWrapperVersion="4.2-1"
 
 
 ######################################################################################
