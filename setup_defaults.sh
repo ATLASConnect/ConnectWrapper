@@ -4,11 +4,11 @@
 
 
 # The version of the wrapper
-export connectWrapperVersion="4.2-1"
+export connectWrapperVersion="4.5-2"
 
 
 ######################################################################################
-# NativeCVMFS, nfsCVMFS, ReplicaCVMFS, PortableCVMFS, Parrot/CVMFS or Parrot/Chirp Wrapper
+# NativeCVMFS, nfsCVMFS, ReplicaCVMFS, PortableCVMFS, ParrotCVMFS or ParrotChirp Wrapper
 ######################################################################################
 # 
 #
@@ -31,7 +31,7 @@ export connectWrapperVersion="4.2-1"
 # The ACE Cache componitents can be local (default tarball installation) or a CVMFS repository
 # The ACE Image can be bypassed and the System libraries used
 #
-# If Parrot/CVMFS is used, Parrot can "mount" access into the ACE Image
+# If ParrotCVMFS is used, Parrot can "mount" access into the ACE Image
 #
 #
 ######################################################################################
@@ -42,12 +42,18 @@ export connectWrapperVersion="4.2-1"
 #
 #	CVMFS Client	"Native" installation of "/cvmfs" and all CERN repositories (MWT2 might not be available)
 #	HEP_OSlibs	Installed on the system along with all other needed compatibility libraries
-#	$OSG_APP	Defined by the system or within site.conf
-#	$OSG_GRID	Defined by the system or within site.conf
+#	$OSG_APP	Defined by the system or within setup_site
+#	$OSG_GRID	Defined by the system or within setup_site
 #	$OSG_WN_TMP	Setup by this wrapper within the job sandbox
-#	$X509_CERT_DIR	Defined by the system or within site.conf or a CA at /etc/grid-security/certificates
+#	$X509_CERT_DIR	Defined by the system or within setup_site or a CA at /etc/grid-security/certificates
 #
 #export connectUseNativeONLY=True
+
+
+# If connectUseClientCVMFS is defined, use ClientCVMFS to access all /cvmfs repositories
+# By default, it is assume that /cvmfs is mounted locally via a locally installed CVMFS Client RPM
+# The wrapper will setup access to an ACE Image (via env var), OSG WN Client and Certficate Authority
+#export connectUseClientCVMFS=True
 
 
 # If connectUseNfsCVMFS is defined, use nfsCVMFS to access all /cvmfs repositories
@@ -85,19 +91,19 @@ export connectWrapperVersion="4.2-1"
 #export connectUseParrotMount=True
 
 
-# If connectUseCVMFSaceImageTB is defined, we will use an ACE Image from a Tarball installed in the ACE Cache
+# If connectUseTBaceImage is defined, we will use an ACE Image from a Tarball installed in the ACE Cache
 # By default, an ACE Image from a CVMFS repository will be used
-#export connectUseCVMFSaceImageTB=True
+#export connectUseTBaceImage=True
 
 
-# If connectUseCVMFSaceWNCtb is defined, we will use the OSG WN Client from a Tarball installed in the ACE Cache
+# If connectUseTBaceWNC is defined, we will use the OSG WN Client from a Tarball installed in the ACE Cache
 # By default, the OSG WNC Client from a CVMFS repository will be used
-#export connectUseCVMFSaceWNCtb=True
+#export connectUseTBaceWNC=True
 
 
-# If connectUseCVMFSaceCAtb is defined, we will use a Certificate Authority from an installation in the ACE Cache
+# If connectUseTBaceCA is defined, we will use a Certificate Authority from an installation in the ACE Cache
 # By default, a Certificate Authority from a CVMFS repoisitory will be used
-#export connectUseCVMFSaceCAtb=True
+#export connectUseTBaceCA=True
 
 
 # If connectUseSystemLIB is defined, we will use an local System libraries for HEPOS_libs, etc
@@ -127,16 +133,16 @@ export connectWrapperVersion="4.2-1"
 #export connectUsePrivateParrotCache=True
 
 
-# Location of the ACE Image if connectUseCVMFSaceImageTB is not defined
+# Location of the ACE Image if connectUseTBaceImage is not defined
 #export connectCVMFSaceImage=/cvmfs/osg.mwt2.org/atlas/sw/ACE/current
 #export connectCVMFSaceImage=/cvmfs/cernvm-prod.cern.ch/cvm3
 
 
-# Location of the OSG WN Client if connectUseCVMFSaceWNCtb is not defined
+# Location of the OSG WN Client if connectUseTBaceWNC is not defined
 #export connectCVMFSaceWNC=/cvmfs/osg.mwt2.org/osg/sw
 
 
-# Location of the Certificate Authority repository if connectUseCVMFSaceCAtb is not defined
+# Location of the Certificate Authority repository if connectUseTBaceCA is not defined
 #export connectCVMFSaceCA=/cvmfs/osg.mwt2.org/osg/CA
 
 
@@ -155,24 +161,36 @@ export _DF_cvmfsType="undefined"
 
 # ACE Image defaults
 
-# Default location of the ACE Image if connectUseCVMFSaceImageTB is not defined
+# Default use of Image Tarball
+export _DF_connectUseTBaceImage=
+
+# Default location of the ACE Image if connectUseTBaceImage is not defined
 export _DF_connectCVMFSaceImage="/cvmfs/osg.mwt2.org/atlas/sw/ACE/current"
 #export _DF_connectCVMFSaceImage="/cvmfs/cernvm-prod.cern.ch/cvm3"
 
-# Default location of the OSG WN Client if connectUseCVMFSaceWNCtb is not defined
+
+# Default use of OSG WN Client tarball
+export _DF_connectUseTBaceWNC=
+
+# Default location of the OSG WN Client if connectUseTBaceWNC is not defined
 export _DF_connectCVMFSaceWNC="/cvmfs/osg.mwt2.org/osg/sw"
 
-# Default location of the Certificate Authority if connectUseCVMFSaceCAtb is not defined
+
+# Default use of Certificate Authority Tarball
+export _DF_connectUseTBaceCA=
+
+# Default location of the Certificate Authority if connectUseTBaceCA is not defined
 export _DF_connectCVMFSaceCA="/cvmfs/osg.mwt2.org/osg/CA"
 
+
 # Server with all the tarballs
-export _DF_aceHTTP="http://rccf.usatlas.org"
+export _DF_connectTBaceHTTP="http://rccf.usatlas.org"
 
 # ACE Image tarball
-export _DF_aceImageTB="ace.tar.gz"
+export _DF_connectTBaceImage="ace.tar.gz"
 
 # ACE OSG Worker Node Client (WNC) tarball
-export _DF_aceWNCtb="osg-wn-client.tar.gz"
+export _DF_connectTBaceWNC="osg-wn-client.tar.gz"
 
 
 ######################################################################################
@@ -183,6 +201,13 @@ export _DF_aceWNCtb="osg-wn-client.tar.gz"
 export _DF_connectFrontierServerURL='(serverurl=http://frontier-atlas.lcg.triumf.ca:3128/ATLAS_frontier)(serverurl=http://frontier-atlas1.lcg.triumf.ca:3128/ATLAS_frontier)(serverurl=http://tier1nfs.triumf.ca:3128/ATLAS_frontier)(serverurl=http://frontier.triumf.ca:3128/ATLAS_frontier)(serverurl=http://ccfrontier.in2p3.fr:23128/ccin2p3-AtlasFrontier)(serverurl=http://ccsqfatlasli02.in2p3.fr:23128/ccin2p3-AtlasFrontier)(serverurl=http://ccsqfatlasli01.in2p3.fr:23128/ccin2p3-AtlasFrontier)'
 
 export _DF_connectFrontierProxyURL="(proxyurl=http://uct2-squid.mwt2.org:3128)"
+
+
+######################################################################################
+
+
+# Default HTTP Proxy
+export _DF_connectHTTPProxy="http://uct2-squid.mwt2.org:3128"
 
 
 ######################################################################################

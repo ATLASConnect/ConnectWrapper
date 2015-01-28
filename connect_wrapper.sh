@@ -41,10 +41,6 @@ source ${connectHome}/setup_site.sh
 # Based on CVMFS Access Type, etc, make certain definitions make sense
 #########################################################################################
 
-# If we have not defined a CVMFS access type, use undefined
-[[ -z "${cvmfsType}" ]] && export cvmfsType="${_DF_cvmfsType}"
-
-
 # Set value values based on the CVMFS Access Type
 
 case ${cvmfsType} in
@@ -54,11 +50,26 @@ case ${cvmfsType} in
   (native)
 
     export connectUseNativeONLY=True
-    export connectUsePortableCVMFS=''
+    export connectUseClientCVMFS=''
     export connectUseNfsCVMFS=''
     export connectUseReplicaCVMFS=''
+    export connectUsePortableCVMFS=''
     export connectUseParrotCVMFS=''
     export connectUseSystemLIB=True
+
+  ;;
+
+
+  # Use ClientCVMFS to access /cvmfs
+
+  (client)
+
+    export connectUseNativeONLY=''
+    export connectUseClientCVMFS=True
+    export connectUseNfsCVMFS=''
+    export connectUseReplicaCVMFS=''
+    export connectUsePortableCVMFS=''
+    export connectUseParrotCVMFS=''
 
   ;;
 
@@ -68,10 +79,11 @@ case ${cvmfsType} in
   (nfs)
 
     export connectUseNativeONLY=''
+    export connectUseClientCVMFS=''
     export connectUseNfsCVMFS=True
     export connectUseReplicaCVMFS=''
-    export connectUseParrotCVMFS=''
     export connectUsePortableCVMFS=''
+    export connectUseParrotCVMFS=''
 
   ;;
 
@@ -81,6 +93,7 @@ case ${cvmfsType} in
   (replica)
 
     export connectUseNativeONLY=''
+    export connectUseClientCVMFS=''
     export connectUseNfsCVMFS=''
     export connectUseReplicaCVMFS=True
     export connectUsePortableCVMFS=''
@@ -94,6 +107,7 @@ case ${cvmfsType} in
   (portable)
 
     export connectUseNativeONLY=''
+    export connectUseClientCVMFS=''
     export connectUseNfsCVMFS=''
     export connectUseReplicaCVMFS=''
     export connectUsePortableCVMFS=True
@@ -107,6 +121,7 @@ case ${cvmfsType} in
   (parrot)
 
     export connectUseNativeONLY=''
+    export connectUseClientCVMFS=''
     export connectUseNfsCVMFS=''
     export connectUseReplicaCVMFS=''
     export connectUsePortableCVMFS=''
@@ -120,10 +135,11 @@ case ${cvmfsType} in
   (*)
 
     export connectUseNativeONLY=True
-    export connectUseParrotCVMFS=''
-    export connectUsePortableCVMFS=''
+    export connectUseClientCVMFS=''
     export connectUseNfsCVMFS=''
     export connectUseReplicaCVMFS=''
+    export connectUsePortableCVMFS=''
+    export connectUseParrotCVMFS=''
     export connectUseSystemLIB=True
 
   ;;
@@ -134,24 +150,6 @@ esac
 
 # If we are using type System libraries (not the ACE Image), undefine UseParrotMount
 [[ -n "${connectUseSystemLIB}" ]] && export connectUseParrotMount=''
-
-
-# The Chirp Server upon which the CVMFS repositories are statically mounted and accessible
-[[ -z "${connectParrotChirpServer}" ]] && export connectParrotChirpServer="${_DF_connectParrotChirpServer}"
-
-# The blocksize to use for Parrot/Chirp, 1M or 2M
-[[ -z "${connectParrotChirpBlocksize}" ]] && export connectParrotChirpBlocksize="${_DF_connectParrotChirpBlocksize}"
-
-
-
-# Location of the ACE Image if connectUseCVMFSaceImageTB is not defined
-[[ -z "${connectCVMFSaceImage}" ]] && export connectCVMFSaceImage="${_DF_connectCVMFSaceImage}"
-
-# Location of the OSG WN Client if connectUseCVMFSaceWNCtb is not defined
-[[ -z "${connectCVMFSaceWNC}" ]] && export connectCVMFSaceWNC="${_DF_connectCVMFSaceWNC}"
-
-# Location of the Certificate Authority if connectUseCVMFSaceCAtb is not defined
-[[ -z "${connectCVMFSaceCA}" ]] && export connectCVMFSaceCA="${_DF_connectCVMFSaceCA}"
 
 
 #########################################################################################
@@ -243,9 +241,6 @@ fi
 # Connect Cache definitions
 #########################################################################################
 
-# Location of Connect Root with a default to /tmp
-[[ -z ${connectRoot} ]] && export connectRoot="${_DF_connectRoot}"
-
 # Full path to the Connect cache for all users on this node
 export connectCacheRoot=${connectRoot}/connectCache
 
@@ -272,9 +267,6 @@ mkdir -p ${connectParrotCache}; chmod 700 ${connectParrotCache}
 # ACE Cache definitions
 #########################################################################################
 
-# Location of the ACE Root
-[[ -z ${aceRoot} ]] && export aceRoot=${_DF_aceRoot}
-
 # Full path to the ACE cache for all users on this node
 export aceCacheRoot=${aceRoot}/aceCache
 
@@ -297,7 +289,7 @@ export aceCache=${aceCacheDailyRoot}
 
 # Location of the CA
 
-if [[ -n "${connectUseCVMFSaceCAtb}" ]]; then
+if [[ -n "${connectUseTBaceCA}" ]]; then
   export aceCA=${aceCache}/CA
 else
   export aceCA=${connectCVMFSaceCA}
@@ -306,7 +298,7 @@ fi
 
 # Location of the ACE OSG WN Client
 
-if [[ -n "${connectUseCVMFSaceWNCtb}" ]]; then
+if [[ -n "${connectUseTBaceWNC}" ]]; then
   export aceWNC=${aceCache}/osg
 else
   export aceWNC=${connectCVMFSaceWNC}
@@ -315,7 +307,7 @@ fi
 
 # Location of the ACE Image (CVMFS or the ACE Cache)
 
-if [[ -n "${connectUseCVMFSaceImageTB}" ]]; then
+if [[ -n "${connectUseTBaceImage}" ]]; then
   export aceImage=${aceCache}/ACE
 else
   export aceImage=${connectCVMFSaceImage}
@@ -342,6 +334,8 @@ f_echo "CVMFS Access Type         = ${cvmfsType}"
 
 if [[ -n "${connectUseNativeONLY}" ]]; then
   f_echo "CVMFS Repository Access   = NativeCVMFS"
+elif [[ -n "${connectUseClientCVMFS}" ]]; then
+  f_echo "CVMFS Repository Access   = ClientCVMFS"
 elif [[ -n "${connectUseNfsCVMFS}" ]]; then
   f_echo "CVMFS Repository Access   = nfsCVMFS"
   f_echo "CVMFS Mount               = ${cvmfsMount}"
@@ -391,6 +385,11 @@ else
   f_echo "ACE Certificate Authority = ${aceCA}/certificates"
   f_echo "ACE Worker Node Client    = ${aceWNC}/osg-wn-client"
   f_echo "ACE Image                 = ${aceImage}"
+
+  # ACE HTTP server is only used if using tarballs for Image or WNC
+  if [[ -n "${connectUseTBaceImage}" || -n "${connectUseTBaceWNC}" ]]; then
+    f_echo "ACE HTTP Server           = ${connectTBaceHTTP}"
+  fi
 
   # ACE etc and var are only needed if we are using Parrot for CVMFS access
   if [[ -n "${connectUseParrotCVMFS}" ]]; then
@@ -545,16 +544,16 @@ fi
 
 if [[ -z "${connectUseNativeONLY}" ]]; then
 
-  source ${connectHome}/setup_osg.sh
+  source ${connectHome}/setup_wnc.sh
 
   # Save the ACE installation status
-  osgStatus=$?
+  wncStatus=$?
 
-  if [[ ${osgStatus} -ne 0 ]]; then
+  if [[ ${wncStatus} -ne 0 ]]; then
      f_echo
-     f_echo "Aborting job: Unable to setup the ACE OSG WN Client with error ${osgStatus}"
+     f_echo "Aborting job: Unable to setup the ACE OSG WN Client with error ${wncStatus}"
      f_echo
-     exit ${osgStatus}
+     exit ${wncStatus}
   fi
 
 fi
@@ -611,6 +610,7 @@ else
 
 fi
 
+f_echo
 f_echo "\$OSG_APP                  = ${OSG_APP}"
 f_echo "\$ATLAS_LOCAL_AREA         = ${ATLAS_LOCAL_AREA}"
 
@@ -648,7 +648,7 @@ f_echo "\$OSG_WN_TMP               = ${OSG_WN_TMP}"
 if [[ -n "${connectUseNativeONLY}" ]]; then
   f_echo "\$HTTP_PROXY               = *SYSTEM*"
 else
-  export HTTP_PROXY=${connectParrotProxy}
+  export HTTP_PROXY=${connectHTTPProxy}
   f_echo "\$HTTP_PROXY               = ${HTTP_PROXY}"
 fi
 
@@ -741,6 +741,8 @@ if [[ -z "${connectUseParrotCVMFS}" ]]; then
 
   if [[ -n "${connectUseNativeONLY}" ]]; then
     f_echo "Begin execution using NativeCVMFS to access the repositories"
+  elif [[ -n "${connectUseClientCVMFS}" ]]; then
+    f_echo "Begin execution using ClientCVMFS to access the repositories"
   elif [[ -n "${connectUseNfsCVMFS}" ]]; then
     f_echo "Begin execution using nfsCVMFS to access the repositories"
   elif [[ -n "${connectUseReplicaCVMFS}" ]]; then

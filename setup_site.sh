@@ -25,6 +25,14 @@ fi
 export FRONTIER_SERVER="${connectFrontierServerURL}${connectFrontierProxyURL}"
 
 
+# HTTP Proxy Servers
+if [[ -n "${_RCC_HTTPProxy}" ]]; then
+  export connectHTTPProxy="${_RCC_HTTPProxy}"
+else
+  export connectHTTPProxy="${_DF_connectHTTPProxy}"
+fi
+
+
 # Connect Cache Root Location
 if [[ -n "${_RCC_ConnectScratch}" ]]; then
   export connectRoot="${_RCC_ConnectScratch}"
@@ -41,6 +49,11 @@ else
 fi
 
 
+####################################################################
+
+
+# Parrot definitions
+
 # Parrot Proxy Servers
 if [[ -n "${_RCC_ParrotProxy}" ]]; then
   export connectParrotProxy="${_RCC_ParrotProxy}"
@@ -48,6 +61,17 @@ else
   export connectParrotProxy="${_DF_connectParrotProxy}"
 fi
 
+# The Chirp Server upon which the CVMFS repositories are statically mounted and accessible
+[[ -z "${connectParrotChirpServer}" ]] && export connectParrotChirpServer="${_DF_connectParrotChirpServer}"
+
+# The blocksize to use for Parrot/Chirp, 1M or 2M
+[[ -z "${connectParrotChirpBlocksize}" ]] && export connectParrotChirpBlocksize="${_DF_connectParrotChirpBlocksize}"
+
+
+####################################################################
+
+
+# CVMFS definitions
 
 # CVMFS Type
 if [[ -n "${_RCC_CVMFS}" ]]; then
@@ -61,7 +85,7 @@ fi
 if [[ -n "${_RCC_CVMFSProxy}" ]]; then
   export cvmfsProxy="${_RCC_CVMFSProxy};DIRECT"
 else
-  export cvmfsProxy="${connectParrotProxy};DIRECT"
+  export cvmfsProxy="${connectHTTPProxy};DIRECT"
 fi
 
 
@@ -87,6 +111,66 @@ if [[ -n "${_RCC_CVMFSQuota}" ]]; then
 else
   export cvmfsQuota="${_DF_cvmfsQuota}"
 fi
+
+
+####################################################################
+
+
+# CVMFS vs Tarball
+
+
+# The server with all our tarballs
+[[ -z "${connectTBaceHTTP}"  ]] && export connectTBaceHTTP="${_DF_connectTBaceHTTP}"
+
+# ACE Image tarball
+[[ -z "${connectTBaceImage}" ]] && export connectTBaceImage="${_DF_connectTBaceImage}"
+
+# ACE OSG Worker Node Client (WNC) tarball
+[[ -z "${connectTBaceWNC}"   ]] && export connectTBaceWNC="${_DF_connectTBaceWNC}"
+
+
+
+# ACE Image
+
+if   [[ ${_RCC_UseTBace} == 'true'  ]]; then
+  export connectUseTBaceImage='true'
+elif [[ ${_RCC_UseTBace} == 'false' ]]; then
+  export connectUseTBaceImage=''
+else
+  export connectUseTBaceImage="${_DF_connectUseTBaceImage}"
+fi
+
+# Location of the ACE Image if connectUseTBaceImage is not defined
+[[ -z "${connectCVMFSaceImage}" ]] && export connectCVMFSaceImage="${_DF_connectCVMFSaceImage}"
+
+
+# OSG Worker Node Client
+
+if   [[ ${_RCC_UseTBace} == 'true'  ]]; then
+  export connectUseTBaceWNC='true'
+elif [[ ${_RCC_UseTBace} == 'false' ]]; then
+  export connectUseTBaceWNC=''
+else
+  export connectUseTBaceWNC="${_DF_connectUseTBaceWNC}"
+fi
+
+# Location of the OSG WN Client if connectUseTBaceWNC is not defined
+[[ -z "${connectCVMFSaceWNC}" ]] && export connectCVMFSaceWNC="${_DF_connectCVMFSaceWNC}"
+
+
+# Certificate Authority
+
+if   [[ ${_RCC_UseTBace} == 'true'  ]]; then
+  export connectUseTBaceCA='true'
+elif [[ ${_RCC_UseTBace} == 'false' ]]; then
+  export connectUseTBaceCA=''
+else
+  export connectUseTBaceCA="${_DF_connectUseTBaceCA}"
+fi
+
+# Location of the Certificate Authority if connectUseTBaceCA is not defined
+[[ -z "${connectCVMFSaceCA}" ]] && export connectCVMFSaceCA="${_DF_connectCVMFSaceCA}"
+
 
 
 ####################################################################

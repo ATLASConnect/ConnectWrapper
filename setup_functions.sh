@@ -77,6 +77,8 @@ function f_ulimit () {
 
 function f_addpath () {
 
+  [[ -z $1 ]] && return 0
+
   echo ${PATH} | /bin/egrep -q "(^|:)$1($|:)"
 
   if [[ $? -ne 0 ]]; then
@@ -99,6 +101,8 @@ function f_addpath () {
 # Add a path to $LD_LIBRARY_PATH if it is missing
 
 function f_addldlibrarypath () {
+
+  [[ -z $1 ]] && return 0
 
   echo "${LD_LIBRARY_PATH}" | /bin/egrep -q "(^|:)$1($|:)"
 
@@ -123,6 +127,8 @@ function f_addldlibrarypath () {
 
 function f_addlibrarypath () {
 
+  [[ -z $1 ]] && return 0
+
   echo "${LIBRARY_PATH}" | /bin/egrep -q "(^|:)$1($|:)"
 
   if [[ $? -ne 0 ]]; then
@@ -145,6 +151,8 @@ function f_addlibrarypath () {
 # Add a path to $DYLD_LIBRARY_PATH if it is missing
 
 function f_adddyldlibrarypath () {
+
+  [[ -z $1 ]] && return 0
 
   echo "${DYLD_LIBRARY_PATH}" | /bin/egrep -q "(^|:)$1($|:)"
 
@@ -169,6 +177,8 @@ function f_adddyldlibrarypath () {
 
 function f_addpythonpath () {
 
+  [[ -z $1 ]] && return 0
+
   echo "${PYTHONPATH}" | /bin/egrep -q "(^|:)$1($|:)"
 
   if [[ $? -ne 0 ]]; then
@@ -191,6 +201,8 @@ function f_addpythonpath () {
 # Add a path to $PERL5LIB if it is missing
 
 function f_addperl5lib () {
+
+  [[ -z $1 ]] && return 0
 
   echo "${PERL5LIB}" | /bin/egrep -q "(^|:)$1($|:)"
 
@@ -215,6 +227,8 @@ function f_addperl5lib () {
 
 function f_addcpath () {
 
+  [[ -z $1 ]] && return 0
+
   echo "${CPATH}" | /bin/egrep -q "(^|:)$1($|:)"
 
   if [[ $? -ne 0 ]]; then
@@ -236,6 +250,8 @@ function f_addcpath () {
 # Add a path to $C_INCLUDE_PATH if it is missing
 
 function f_addcincludepath () {
+
+  [[ -z $1 ]] && return 0
 
   echo "${C_INCLUDE_PATH}" | /bin/egrep -q "(^|:)$1($|:)"
 
@@ -260,6 +276,8 @@ function f_addcincludepath () {
 
 function f_addcplusincludepath () {
 
+  [[ -z $1 ]] && return 0
+
   echo "${CPLUS_INCLUDE_PATH}" | /bin/egrep -q "(^|:)$1($|:)"
 
   if [[ $? -ne 0 ]]; then
@@ -283,6 +301,8 @@ function f_addcplusincludepath () {
 
 function f_addcflags () {
 
+  [[ -z $1 ]] && return 0
+
   echo "${CFLAGS}" | /bin/egrep -q "(^|:)$1($|:)"
 
   if [[ $? -ne 0 ]]; then
@@ -305,6 +325,8 @@ function f_addcflags () {
 # Add a path to $CXXFLAGS if it is missing
 
 function f_addcplusflags () {
+
+  [[ -z $1 ]] && return 0
 
   echo "${CXXFLAGS}" | /bin/egrep -q "(^|:)$1($|:)"
 

@@ -12,10 +12,10 @@
 #########################################################################################
 
 # The server with all our tarballs
-aceHTTP="${_DF_aceHTTP}"
+aceHTTP="${connectTBaceHTTP}"
 
 # ACE Image tarball
-aceImageTB="${_DF_aceImageTB}"
+aceImageTB="${connectTBaceImage}"
 
 
 # ACE binary path
@@ -65,7 +65,7 @@ aceRsync="/usr/bin/rsync --quiet --delete --ignore-errors --archive --no-owner -
 
 # If we are using a CVMFS Image, we are done
 
-if [[ -z "${connectUseCVMFSaceImageTB}" ]]; then
+if [[ -z "${connectUseTBaceImage}" ]]; then
   f_echo "Using CVMFS based ACE Image from ${aceImage}"
 else
 
@@ -82,7 +82,7 @@ else
     f_echo "Using existing ACE Image created on $(date -d @$(cat ${aceImageTS}) +%c)"
   else
 
-    f_echo "Installation of the ACE Image from TarBall ${aceHTTP}/${aceImageTB}"
+    f_echo "Installation of the ACE Image from TarBall ${aceHTTP}/download/${aceImageTB}"
     f_echo "ACE Image will be located at ${aceImage}"
 
     # Remove any partial ACE that might be corrupt and start from scratch
@@ -92,7 +92,7 @@ else
     mkdir -p ${aceImage}
 
     # Pull down the current tarball from the osg area
-    wget --quiet --directory-prefix=${aceImage} ${aceHTTP}/ace/${aceImageTB}
+    wget --quiet --directory-prefix=${aceImage} ${aceHTTP}/download/${aceImageTB}
 
     # Save the status
     aceStatus=$?
@@ -233,7 +233,7 @@ if [[ -n "${connectUseParrotCVMFS}" ]]; then
 
     # If we are using the Image from /cvmfs, we must use Parrot/CVMFS to access the source files
 
-    if [[ -z "${connectUseCVMFSaceImageTB}" ]]; then
+    if [[ -z "${connectUseTBaceImage}" ]]; then
 
       # Use Parrot to fetch a copy of the etc directory
       ${connectBIN}/parrot_run						\
@@ -330,7 +330,7 @@ if [[ -n "${connectUseParrotCVMFS}" ]]; then
 
     # If we are using the Image from /cvmfs, we must use Parrot/CVMFS to access the source files
 
-    if [[ -z "${connectUseCVMFSaceImageTB}" ]]; then
+    if [[ -z "${connectUseTBaceImage}" ]]; then
 
       # Use Parrot to fetch a copy of the var directory
       ${connectBIN}/parrot_run						\

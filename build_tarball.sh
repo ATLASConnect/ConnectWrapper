@@ -11,7 +11,7 @@ source ${buildHome}/setup_defaults.sh
 downloadHome=/home/www/download
 
 
-# The CCTOOLS we are to use
+# The CCTools we are to use
 #cctoolsVer="current"
 cctoolsVer="4.2.2"
 #cctoolsVer="4.1.4rc5"
@@ -19,8 +19,8 @@ cctoolsVer="4.2.2"
 # Override the default it given
 [[ ! -z $1 ]] && cctoolsVer=$1
 
-# Were we can find the cctools tarball
-cctoolsHome=${downloadHome}
+# Were we can find the CCTools tarball
+cctoolsHome=${downloadHome}/CCTools
 
 # The pCVMFS we are to use
 pcvmfsVer="2.1.19"
@@ -28,8 +28,8 @@ pcvmfsVer="2.1.19"
 # Override the default it given
 [[ ! -z $1 ]] && pcvmfsVer=$2
 
-# Where we can find the pCVMFS tarball
-pcvmfsHome=${downloadHome}
+# Where we can find the PortableCVMFS tarball
+pcvmfsHome=${downloadHome}/PortableCVMFS
 
 
 
@@ -37,7 +37,7 @@ pcvmfsHome=${downloadHome}
 
 function f_maketarball () {
 
-  # CCTOOLS to use
+  # CCTools to use
   cctoolsVer=$1
 
   # Get a working temp directory
@@ -81,7 +81,7 @@ function f_maketarball () {
   cp ${buildHome}/setup_defaults.sh             ${connectHome}/setup_defaults.sh;  chmod 755 ${connectHome}/setup_defaults.sh
   cp ${buildHome}/setup_functions.sh            ${connectHome}/setup_functions.sh; chmod 755 ${connectHome}/setup_functions.sh
   cp ${buildHome}/setup_ace.sh                  ${connectHome}/setup_ace.sh;       chmod 755 ${connectHome}/setup_ace.sh
-  cp ${buildHome}/setup_osg.sh                  ${connectHome}/setup_osg.sh;       chmod 755 ${connectHome}/setup_osg.sh
+  cp ${buildHome}/setup_wnc.sh                  ${connectHome}/setup_wnc.sh;       chmod 755 ${connectHome}/setup_wnc.sh
   cp ${buildHome}/setup_ca.sh                   ${connectHome}/setup_ca.sh;        chmod 755 ${connectHome}/setup_ca.sh
   cp ${buildHome}/setup_site.sh                 ${connectHome}/setup_site.sh;      chmod 755 ${connectHome}/setup_site.sh
   cp ${buildHome}/exec.sh                       ${connectHome}/exec.sh;            chmod 755 ${connectHome}/exec.sh
@@ -93,16 +93,17 @@ function f_maketarball () {
 
 
   # Put a copy in a place others can wget
-  cp ${tmpHome}/connect.tar.gz                  ${downloadHome}/connect.tar.gz.${connectWrapperVersion}
+  mkdir -p ${downloadHome}/ConnectWrapper
+  cp ${tmpHome}/connect.tar.gz                  ${downloadHome}/ConnectWrapper/connect-${connectWrapperVersion}.tar.gz
 
   # Destroy the working temp directory
   rm -rf ${tmpHome}
 
-  echo "Built ConnectWrapper ${connectWrapperVersion} tarball with CCTOOLS ${cctoolsVer}"
+  echo "Built ConnectWrapper ${connectWrapperVersion} tarball (CCTools ${cctoolsVer} PortableCVMFS ${pcvmfsVer})"
 
   # Make it the active wrapper
   rm -f ${downloadHome}/connect.tar.gz
-  cp ${downloadHome}/connect.tar.gz.${connectWrapperVersion} ${downloadHome}/connect.tar.gz
+  cp ${downloadHome}/ConnectWrapper/connect-${connectWrapperVersion}.tar.gz ${downloadHome}/connect.tar.gz
 
   echo "ConnectWrapper ${connectWrapperVersion} is marked current"
 

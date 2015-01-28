@@ -6,6 +6,11 @@ ConnectWrapper provides an Atlas Complaint Environment on a Remote Cluster
 
 History
 =======
+20150128  4.5-2  Change location of OSG and ACE downloads to "/home/www/download"
+20150127  4.5-1  Fixed some typos
+20150126  4.5-0  Add support for _RCC_USE_TB_ACE_xxx. Move all _DF_ to setup_site.sh. Rename setup_osg to setup_wnc
+20150113  4.4-0  Make HTTP_PROXY separate option from ParrotProxy
+20141216  4.3-0  Add ClientCVMFS type (CVMFS Client + ACE etc)
 20141210  4.2-1  Fix function search in f_echo to setup_functions
 20141210  4.2-0  Change all conf files to setup_xxxx.sh (setup_defaults, setup_site, setup_functions)
 20141209  4.1-0  Merge all site.conf into one
